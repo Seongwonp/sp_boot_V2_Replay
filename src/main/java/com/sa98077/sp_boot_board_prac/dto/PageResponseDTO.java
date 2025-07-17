@@ -3,11 +3,13 @@ package com.sa98077.sp_boot_board_prac.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
 @Getter
 @ToString
+@Log4j2
 public class PageResponseDTO<E> {
 
     private final int page;
@@ -62,7 +64,7 @@ public class PageResponseDTO<E> {
         this.end = tempEnd;
 
         this.prev = this.start > 1;
-        this.next = this.end < last;
+        this.next = currentPage < last;
 
     }
 }

@@ -85,6 +85,13 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    public void removeRepliesByBno(Long bno) {
+        log.info("removeRepliesByBno : {}", bno);
+        replyRepository.deleteByBoardBno(bno);
+        replyRepository.flush();
+    }
+
+    @Override
     public ReplyDTO getReply(Long rno) {
         Optional<Reply> replyOptional =  replyRepository.findById(rno);
         Reply reply = replyOptional.orElseThrow();

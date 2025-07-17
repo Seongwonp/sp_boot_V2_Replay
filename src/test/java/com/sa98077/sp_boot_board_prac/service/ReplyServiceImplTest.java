@@ -27,4 +27,10 @@ class ReplyServiceImplTest {
     void replyCountByBno() {
         log.info("Reply Count: {}",replyService.ReplyCountByBno(91L));
     }
+
+
+    @Test
+    void removeReplyByBno(){
+        replyService.removeRepliesByBno(5L);
+    }
 }

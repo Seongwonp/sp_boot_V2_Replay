@@ -6,6 +6,9 @@ import com.sa98077.sp_boot_board_prac.dto.BoardListReplyCountDTO;
 import com.sa98077.sp_boot_board_prac.dto.PageRequestDTO;
 import com.sa98077.sp_boot_board_prac.dto.PageResponseDTO;
 import com.sa98077.sp_boot_board_prac.service.BoardService;
+import com.sa98077.sp_boot_board_prac.service.ReplyService;
+import com.sa98077.sp_boot_board_prac.service.ReplyServiceImpl;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor // 생성자 주입방식
 public class BoardController {
     private final BoardService boardService;
+    private final ReplyService replyService;
 
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO,
@@ -30,7 +34,7 @@ public class BoardController {
         PageResponseDTO<BoardListReplyCountDTO> list = boardService.getListWithReplyCount(pageRequestDTO);
         model.addAttribute("responseDTO", list);
 
-        log.info("pageRequestDTO : {}", list);
+//        log.info("pageRequestDTO : {}", list);
     }
 
     @GetMapping("/add")
@@ -50,7 +54,7 @@ public class BoardController {
             redirectAttributes.addFlashAttribute("errors",bindingResult.getAllErrors());
             return "redirect:/board/add";
         }
-        log.info("boardDTO : {}", boardDTO);
+//        log.info("boardDTO : {}", boardDTO);
         Long bno = boardService.add(boardDTO);
         log.info("[Success] New board added Bno : {}", bno);
         redirectAttributes.addFlashAttribute("bno",bno);
@@ -82,7 +86,7 @@ public class BoardController {
                          RedirectAttributes redirectAttributes) {
         log.info("************* modifyGet() *************");
         BoardDTO boardDTO = boardService.searchOne(bno);
-        log.info("boardDTO : {}", boardDTO);
+//        log.info("boardDTO : {}", boardDTO);
         if (boardDTO == null) {
             log.info("boardDTO is null");
             redirectAttributes.addFlashAttribute("errors", "The requested post does not exist. :(");
@@ -98,7 +102,7 @@ public class BoardController {
                              @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO,
                              RedirectAttributes redirectAttributes) {
         log.info("************* modifyPost() *************");
-        log.info("boardDTO : {}", boardDTO);
+//        log.info("boardDTO : {}", boardDTO);
 
         if (bindingResult.hasErrors()) {
             log.info("ERROR : {}", bindingResult);
@@ -119,11 +123,12 @@ public class BoardController {
 
 
     @PostMapping("/delete")
+    @Transactional
     public String delete(Long bno, RedirectAttributes redirectAttributes) {
         log.info("delete bno : {}", bno);
+        replyService.removeRepliesByBno(bno); // 삭제전에 해당하는 bno의 댓글 삭제
 
         boardService.remove(bno); // 서비스에서 삭제 메서드 호출
-
         redirectAttributes.addFlashAttribute("msg", "The post has been successfully deleted :)");
         return "redirect:/board/list";
     }

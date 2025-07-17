@@ -51,18 +51,19 @@ public class ReplyController {
                 .build();
 
         PageResponseDTO<ReplyDTO> responseDTO = replyService.getRepliesByBoard(bno, pageRequestDTO);
+        log.info("댓글 목록: {}", responseDTO);
         return ResponseEntity.ok(responseDTO);
     }
 
     // 특정 댓글 조회
-    @Operation(summary = "댓글 조회", description = "댓글 번호(rno)를 기반으로 상세 댓글을 조회")
+    @Operation(summary = "댓글 조회", description = "댓글 번호(rno)으로 상세 댓글을 조회")
     @GetMapping("/{rno}")
     public ResponseEntity<ReplyDTO> getReply(@PathVariable("rno") Long rno) {
         return ResponseEntity.ok(replyService.getReply(rno));
     }
 
     // 댓글 수정
-    @Operation(summary = "댓글 수정", description = "댓글 번호(rno)를 기반으로 내용 수정")
+    @Operation(summary = "댓글 수정", description = "댓글 번호(rno)를 이용하여 내용 수정")
     @PutMapping("/{rno}")
     public ResponseEntity<Map<String, Long>> update(@PathVariable("rno") Long rno,
                                                     @RequestBody ReplyDTO replyDTO) {
@@ -72,7 +73,7 @@ public class ReplyController {
     }
 
     // 댓글 삭제
-    @Operation(summary = "댓글 삭제", description = "댓글 번호(rno)를 기반으로 삭제 처리")
+    @Operation(summary = "댓글 삭제", description = "댓글 번호(rno)를 이용해 삭제 처리")
     @DeleteMapping("/{rno}")
     public ResponseEntity<Map<String, Long>> delete(@PathVariable("rno") Long rno) {
         replyService.removeReply(rno);

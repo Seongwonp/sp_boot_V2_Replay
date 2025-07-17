@@ -12,6 +12,7 @@ public interface ReplyService {
     Long ReplyCountByBno(Long bno);
     void modifyReply(ReplyDTO replyDTO);
     void removeReply(Long rno);
+    void removeRepliesByBno(Long bno);
     ReplyDTO getReply(Long rno);
 
 }
